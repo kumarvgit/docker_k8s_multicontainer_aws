@@ -1,0 +1,43 @@
+version: 2
+jobs:
+  test-client:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Test client
+          command: |
+            export CI=true
+            docker build -t ${DOCKERHUB_PASSWD}/docker_k8s_multi_aws_client -f ./client/Dockerfile.dev .
+            docker run -it ${DOCKERHUB_PASSWD}/docker_k8s_multi_aws_client npm run test -- --coverage --watchAll=false
+  publish-client:
+    docker:
+      - image: circleci/buildpack-deps:stretch
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Build client image
+          command: |
+            docker build -t ${DOCKERHUB_PASSWD}/docker_k8s_aws .
+      - deploy:
+          name: Push application Docker image
+          command: |
+            echo "$DOCKERHUB_SHADOW" | docker login -u "$DOCKERHUB_PASSWD" --password-stdin
+            docker push ${DOCKERHUB_PASSWD}/docker_k8s_aws
+workflows:
+  version: 2
+  build-master:
+    jobs:
+      - test-client:
+          filters:
+            branches:
+              only: main
+      - publish-client:
+          requires:
+            - test-client
+          filters:
+            branches:
+              only: main
