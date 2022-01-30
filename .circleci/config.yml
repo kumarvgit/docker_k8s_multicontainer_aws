@@ -21,13 +21,12 @@ jobs:
       - run:
           name: Build client image
           command: |
-            docker build -t ${DOCKERHUB_PASSWD}/docker_k8s_multi_aws_client ./client
+            docker build -t ${DOCKERHUB_PASSWD}/multi-client ./client
       - deploy:
           name: Push application Docker image
           command: |
-            cd client
             echo "$DOCKERHUB_SHADOW" | docker login -u "$DOCKERHUB_PASSWD" --password-stdin
-            docker push ${DOCKERHUB_PASSWD}/docker_k8s_multi_aws_client
+            docker push ${DOCKERHUB_PASSWD}/multi-client
 workflows:
   version: 2
   build-master:
