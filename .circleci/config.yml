@@ -26,8 +26,9 @@ jobs:
       - deploy:
           name: Push application Docker image
           command: |
+            cd client
             echo "$DOCKERHUB_SHADOW" | docker login -u "$DOCKERHUB_PASSWD" --password-stdin
-            docker push ${DOCKERHUB_PASSWD}/docker_k8s_aws
+            docker push ${DOCKERHUB_PASSWD}/docker_k8s_multi_aws_client
 workflows:
   version: 2
   build-master:
