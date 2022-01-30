@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  test-client:
+  test:
     docker:
       - image: circleci/buildpack-deps:stretch
     steps:
@@ -9,8 +9,9 @@ jobs:
       - run:
           name: Test client
           command: |
+            cd client
             export CI=true
-            docker build -t ${DOCKERHUB_PASSWD}/docker_k8s_multi_aws_client -f ./client/Dockerfile.dev .
+            docker build -t ${DOCKERHUB_PASSWD}/docker_k8s_multi_aws_client -f Dockerfile.dev .
             docker run -it ${DOCKERHUB_PASSWD}/docker_k8s_multi_aws_client npm run test -- --coverage --watchAll=false
   publish-client:
     docker:
@@ -31,13 +32,13 @@ workflows:
   version: 2
   build-master:
     jobs:
-      - test-client:
+      - test:
           filters:
             branches:
               only: main
-      - publish-client:
+      - publish-latest:
           requires:
-            - test-client
+            - test
           filters:
             branches:
               only: main
