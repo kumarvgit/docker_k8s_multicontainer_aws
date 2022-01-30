@@ -10,7 +10,7 @@ jobs:
           name: Test client
           command: |
             export CI=true
-            docker build -t ${DOCKERHUB_PASSWD}/docker_k8s_multi_aws_client -f ./client/Dockerfile.dev .
+            docker build -t ${DOCKERHUB_PASSWD}/docker_k8s_multi_aws_client -f ./client/Dockerfile.dev ./client
             docker run -it ${DOCKERHUB_PASSWD}/docker_k8s_multi_aws_client npm run test -- --coverage --watchAll=false
   publish-latest:
     docker:
