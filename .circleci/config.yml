@@ -9,9 +9,8 @@ jobs:
       - run:
           name: Test client
           command: |
-            cd client
             export CI=true
-            docker build -t ${DOCKERHUB_PASSWD}/docker_k8s_multi_aws_client -f Dockerfile.dev .
+            docker build -t ${DOCKERHUB_PASSWD}/docker_k8s_multi_aws_client -f ./client/Dockerfile.dev .
             docker run -it ${DOCKERHUB_PASSWD}/docker_k8s_multi_aws_client npm run test -- --coverage --watchAll=false
   publish-latest:
     docker:
@@ -22,7 +21,7 @@ jobs:
       - run:
           name: Build client image
           command: |
-            docker build -t ${DOCKERHUB_PASSWD}/docker_k8s_aws .
+            docker build -t ${DOCKERHUB_PASSWD}/docker_k8s_multi_aws_client ./client
       - deploy:
           name: Push application Docker image
           command: |
